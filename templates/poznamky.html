@@ -42,12 +42,12 @@
         {% for form in form %}
 
         {% if form.id == poznamky[0] %}
-        <div class="poznamka_text">
+        <div class="poznamka_text ">
         <form method="POST" action="/upravit/poznamky/{{poznamky[0]}}">
         {{form.csrf_token}}
         {{form.uprava()}}
         
-        <input type="submit" value="Upravit">
+        <input type="submit" value="Upravit" class="uprava_poznamky">
         </form>
     </div>
         {% endif %}
@@ -57,12 +57,12 @@
    
     {% else %}
     <div class="poznamka_text">{{poznamky[2]}}</div> <br>
-    {% endif %} <br>
+    {% endif %} 
         {% if not poznamky[0] == -1 %}
         <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
         {% endif %}
         <div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}</div>
-        {{poznamky[4]}}
+        
     </div>
     {% endif %}
     {% endfor %}
@@ -92,7 +92,7 @@
 {{form.csrf_token}}
 {{form.uprava()}}
 
-<input type="submit" value="Upravit">
+<input type="submit" value="Upravit" class="uprava_poznamky">
 </form>
 </div>
 {% endif %}
@@ -102,12 +102,12 @@
 
 {% else %}
 <div class="poznamka_text">{{poznamky[2]}}</div> <br>
-{% endif %} <br>
+{% endif %} 
 {% if not poznamky[0] == -1 %}
 <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
 {% endif %}
 <div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}</div>
-{{poznamky[4]}}
+
 </div>
 {% endif %}
 {% endfor %}
@@ -137,7 +137,7 @@
 {{form.csrf_token}}
 {{form.uprava()}}
 
-<input type="submit" value="Upravit">
+<input type="submit" value="Upravit" class="uprava_poznamky">
 </form>
 </div>
 {% endif %}
@@ -147,12 +147,12 @@
 
 {% else %}
 <div class="poznamka_text">{{poznamky[2]}}</div> <br>
-{% endif %} <br>
+{% endif %} 
 {% if not poznamky[0] == -1 %}
 <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
 {% endif %}
 <div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}</div>
-{{poznamky[4]}}
+
 </div>
 {% endif %}
 {% endfor %}
