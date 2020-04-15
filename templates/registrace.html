@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Poznámky</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/styly/custom.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    <h1>registrace</h1>
+    <form method="POST" action="/registrace">
+        {{form.csrf_token}}
+        {{form.jmeno()}} jméno<br>
+        {{form.heslo()}} heslo<br>
+        {{form.heslo_znovu()}} znovu heslo<br>
+        {{form.obrazek()}} obrázek [odkaz] (volitelné)<br>
+        <input type="submit" value="Potvrdit">{{upozorneni}}<br>
+        <p>Data nejsou nijak zabezpečena, nevkládejte proto žádné údaje, o které nechcete přijít</p>
+        <a href="/" class="chybova_hlaska_odkaz">zpět na úvodní stránku</a>
+    </form>
+
+</body>
+</html>

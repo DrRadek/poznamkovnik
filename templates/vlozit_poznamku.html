@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Poznámky</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/styly/custom.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    <div class="pozadi_poznamky"><div>
+    <div class="menu">
+        <text style="left:0%;"><a href="/profil/{{jmeno}}/edit">{{jmeno}}</a></text>
+        <text style="left:calc(50% - 284px);"><a href="/">všechny poznámky</a></text>
+        <text style="left:calc(50% - 120px);"><a href="/poznamky">moje poznámky</a></text>
+        <text style="left:calc(50% + 19px);"><a href="/poznamka/vlozit">vložit poznámku</a></text>
+        <text style="left:calc(100% - 240px);"><a href="/registrace">{{registrovat}}</a></text>
+        <text style="left:calc(100% - 120px);"><a href="/prihlaseni">{{prihlaseni}}</a></text>
+        <text style="left:calc(100% - 120px);"><a href="/odhlaseni">{{odhlaseni}}</a></text>
+    </div>
+    <br>
+    
+    <br>
+    
+    <div class="vkladani_poznamek">
+        <h1>Poznámky</h1>
+    <form method="POST" action="/poznamka/vlozit">
+
+        {{form.csrf_token}}
+        {{form.poznamka()}}<br>
+
+        <div class="left_poznamky">{{form.soukrome_verejne()}}</div>
+
+        <input type="submit" value="Vložit poznámku"><br>{{upozorneni}}<br>
+    </form>
+</div>
+
+</body>
+</html>

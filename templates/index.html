@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Poznámky</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/styly/custom.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    <div class="menu">
+        <text style="left:0%;"><a href="/profil/{{jmeno}}/edit">{{jmeno}}</a></text>
+        <text style="left:calc(50% - 284px);"><a href="/">všechny poznámky</a></text>
+        <text style="left:calc(50% - 120px);"><a href="/poznamky">moje poznámky</a></text>
+        <text style="left:calc(50% + 19px);"><a href="/poznamka/vlozit">vložit poznámku</a></text>
+        <text style="left:calc(100% - 240px);"><a href="/registrace">{{registrovat}}</a></text>
+        <text style="left:calc(100% - 120px);"><a href="/prihlaseni">{{prihlaseni}}</a></text>
+        <text style="left:calc(100% - 120px);"><a href="/odhlaseni">{{odhlaseni}}</a></text>
+    </div>
+    <br>
+    <h1>Nové poznámky</h1>
+    {% for poznamky in poznamky %}
+
+    <div class="poznamka">
+        
+        <div class="poznamka_nadpis">
+           
+            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[5]}} width="50px" height="50px"></a>
+            <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
+        </div>
+       
+        <div class="poznamka_text">{{poznamky[2]}}</div> <br>
+        <div class="poznamka_datum"  style="background-color:{{poznamky[6]}};">{{poznamky[3]}}<br>
+            {% if not poznamky[0] == -1 %}
+        {{poznamky[4]}}
+        <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        {% endif %}   </div>
+
+    </div>
+
+    <br>
+    {% endfor %}
+    <p>{{poznamky2}}</p>
+</body>
+</html>
