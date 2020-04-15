@@ -31,7 +31,28 @@
             
         </div>
        
-        <div class="poznamka_text">{{poznamky[2]}}</div> <br>
+        {% if not poznamky[0] == -1 %}
+       
+        
+        {% for form in form %}
+
+        {% if form.id == poznamky[0] %}
+        <div class="poznamka_text">
+        <form method="POST" action="/upravit/poznamky/{{poznamky[0]}}">
+        {{form.csrf_token}}
+        {{form.uprava()}}
+        
+        <input type="submit" value="Upravit">
+        </form>
+    </div>
+        {% endif %}
+    
+        
+        {% endfor %}
+   
+    {% else %}
+    <div class="poznamka_text">{{poznamky[2]}}</div> <br>
+    {% endif %} <br>
         <div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}<a href="/smaz/poznamky/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a></div>
         
     </div>

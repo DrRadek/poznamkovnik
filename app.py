@@ -21,6 +21,11 @@ class PoznamkaForm(FlaskForm):
     soukrome_verejne = RadioField("soukrome nebo verejne",
                       choices=[('soukromé', 'soukromé'), ('veřejné', 'veřejné')])
 
+class UpravaForm(FlaskForm):
+    id=""
+    uprava = TextAreaField("uprava", validators=[DataRequired(),length(min=1,max=250)])
+
+
 class RegistraceForm(FlaskForm):
     jmeno = StringField("jmeno", validators=[DataRequired()])
     heslo = StringField("heslo", validators=[DataRequired()], widget=PasswordInput(hide_value=False))
@@ -42,7 +47,8 @@ def zobraz_vsechny_poznamky():
     cursor.execute(f'CREATE TABLE IF NOT EXISTS poznamky (jmeno varchar(30), poznamka varchar({max_delka}) , datum varchar(40), soukrome varchar(10))')
     conn.commit()
     
-
+    form = []
+    
     prihlasen = 0
     if not 'prihlasen' in session:
         jmeno="anonym"
@@ -89,6 +95,7 @@ def zobraz_vsechny_poznamky():
             poznamky3[i].append("rgb(25,25,25)")
             if not jmeno=="Admin":
                 poznamky3[i][0] = -1
+
         else:
             uzivatel_se_nasel = False
             for radky2 in data_uzivatele2:
@@ -96,6 +103,8 @@ def zobraz_vsechny_poznamky():
                     poznamky3[i].append(str(radky2[3]))
                     if not jmeno=="Admin" and not jmeno==poznamky[i][1]:
                         poznamky3[i][0] = -1
+
+
                     uzivatel_se_nasel = True
             if not uzivatel_se_nasel:
                 poznamky3[i].append("https://previews.123rf.com/images/happyvector071/happyvector0711608/happyvector071160800591/62947847-abstract-creative-vector-design-layout-with-text-do-not-exist-.jpg")
@@ -112,16 +121,20 @@ def zobraz_vsechny_poznamky():
         i+=1
 
     poznamky4=[]
-
+    i = 0
     for radky in poznamky3:            
         if not radky[4] == "soukromé" or (jmeno != "anonym" and jmeno == radky[1]):
+            form.append(UpravaForm())
+            form[i].uprava.data=radky[2]
+            form[i].id = radky[0]
+            i+=1
             poznamky4.append(radky)
+            
     
 
 
-
     conn.close()
-    return render_template('index.html',
+    return render_template('index.html', form=form,
     poznamky=poznamky4, poznamky2=poznamky2, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
 
 @app.route('/poznamka/vlozit', methods=['GET','POST'])
@@ -202,7 +215,7 @@ def vloz_poznamku():
 
 @app.route('/poznamky', methods=['GET'])
 def zobraz_poznamky():
-
+    form = []
     prihlasen = session['prihlasen']
     if prihlasen==0:
         jmeno="anonym"
@@ -234,7 +247,9 @@ def zobraz_poznamky():
             conn_uzivatele.close()
             i=0
             for radky in poznamky2:
-
+                form.append(UpravaForm())
+                form[i].uprava.data=radky[2]
+                form[i].id = radky[0]
                 uzivatel_se_nasel = False
                 for radky2 in data_uzivatele2:
                     if radky2[0] == poznamky2[i][1]:
@@ -245,7 +260,7 @@ def zobraz_poznamky():
                 poznamky2[i][3] = datetime.strptime(poznamky2[i][3], '%Y-%m-%d %H:%M:%S.%f').strftime("%d.%m.%Y %H:%M")
                 
                 i+=1
-        return render_template('poznamky.html', poznamky=poznamky2, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
+        return render_template('poznamky.html',form=form , poznamky=poznamky2, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
 
 @app.route('/profil/<jmeno_profilu>', methods=['GET'])
 def zobraz_profil(jmeno_profilu):
@@ -386,6 +401,30 @@ def smaz_poznamku(predchozi_stranka,jmeno_uzivatele,id_poznamky):
 
     return redirect(f"/{predchozi_stranka}")
 
+@app.route("/upravit/<predchozi_stranka>/<int:id>", methods=['GET','POST'])
+def uprav_poznamku(predchozi_stranka, id):
+    if predchozi_stranka == "index":
+        predchozi_stranka = ""
+    form = UpravaForm()
+
+    if form.validate_on_submit():
+        conn = sqlite3.connect(databaze_poznamky)
+        cursor = conn.cursor()
+        data_do_databaze=(form.uprava.data, id)
+        cursor.execute("UPDATE poznamky set poznamka=? WHERE rowid=?", data_do_databaze)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect(f"/{predchozi_stranka}")
+        
+    else:
+        return render_template('chyba.html', chybova_hlaska_nadpis="Chyba při změně poznámky",chybova_hlaska_text="Poznámka byla příliš dlouhá (" + str(len(form.uprava.data)) +"/250)")
+
+        
+
+    
+
+    
 
 if __name__ == '__main__':
     app.run()

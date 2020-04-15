@@ -27,12 +27,35 @@
             <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[5]}} width="50px" height="50px"></a>
             <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
         </div>
+        {% if not poznamky[0] == -1 %}
        
+        
+            {% for form in form %}
+
+            {% if form.id == poznamky[0] %}
+            <div class="poznamka_text">
+            <form method="POST" action="/upravit/index/{{poznamky[0]}}">
+            {{form.csrf_token}}
+            {{form.uprava()}}
+            
+            <input type="submit" value="Upravit">
+            </form>
+        </div>
+            {% endif %}
+        
+            
+            {% endfor %}
+       
+        {% else %}
         <div class="poznamka_text">{{poznamky[2]}}</div> <br>
+        {% endif %}
+       
+
         <div class="poznamka_datum"  style="background-color:{{poznamky[6]}};">{{poznamky[3]}}<br>
             {% if not poznamky[0] == -1 %}
         {{poznamky[4]}}
         <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        <!--<a href="/edit/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">editovat</a>-->
         {% endif %}   </div>
 
     </div>
