@@ -20,13 +20,18 @@
     <br>
     <h1>Tvé poznámky</h1>
 
-    {% for poznamky in poznamky %}
-
+    
+    <div class="poznamka_radek">
+        <div class="poznamka_sloupec">
+            <h2 class="dulezite">důležité poznámky</h2>
+            {% for poznamky in poznamky %}
+            {% if poznamky[5] == 3 %}
+            
     <div class="poznamka">
         
         <div class="poznamka_nadpis">
             
-            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[5]}} width="50px" height="50px"></a>
+            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[6]}} width="50px" height="50px"></a>
             <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
             
         </div>
@@ -53,11 +58,109 @@
     {% else %}
     <div class="poznamka_text">{{poznamky[2]}}</div> <br>
     {% endif %} <br>
-        <div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}<a href="/smaz/poznamky/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a></div>
-        
+        {% if not poznamky[0] == -1 %}
+        <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        {% endif %}
+        <div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}</div>
+        {{poznamky[4]}}
     </div>
-
-    <br>
+    {% endif %}
     {% endfor %}
+</div>
+<div class="poznamka_sloupec">
+    <h2 class="normalni">normální poznámky</h2>
+    {% for poznamky in poznamky %}
+    {% if poznamky[5] == 2 %}
+    
+<div class="poznamka">
+
+<div class="poznamka_nadpis">
+    
+    <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[6]}} width="50px" height="50px"></a>
+    <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
+    
+</div>
+
+{% if not poznamky[0] == -1 %}
+
+
+{% for form in form %}
+
+{% if form.id == poznamky[0] %}
+<div class="poznamka_text">
+<form method="POST" action="/upravit/poznamky/{{poznamky[0]}}">
+{{form.csrf_token}}
+{{form.uprava()}}
+
+<input type="submit" value="Upravit">
+</form>
+</div>
+{% endif %}
+
+
+{% endfor %}
+
+{% else %}
+<div class="poznamka_text">{{poznamky[2]}}</div> <br>
+{% endif %} <br>
+{% if not poznamky[0] == -1 %}
+<a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+{% endif %}
+<div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}</div>
+{{poznamky[4]}}
+</div>
+{% endif %}
+{% endfor %}
+</div>
+<div class="poznamka_sloupec">
+    <h2 class="nedulezite">nedůležité poznámky</h2>
+    {% for poznamky in poznamky %}
+    {% if poznamky[5] == 1 %}
+    
+<div class="poznamka">
+
+<div class="poznamka_nadpis">
+    
+    <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[6]}} width="50px" height="50px"></a>
+    <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
+    
+</div>
+
+{% if not poznamky[0] == -1 %}
+
+
+{% for form in form %}
+
+{% if form.id == poznamky[0] %}
+<div class="poznamka_text">
+<form method="POST" action="/upravit/poznamky/{{poznamky[0]}}">
+{{form.csrf_token}}
+{{form.uprava()}}
+
+<input type="submit" value="Upravit">
+</form>
+</div>
+{% endif %}
+
+
+{% endfor %}
+
+{% else %}
+<div class="poznamka_text">{{poznamky[2]}}</div> <br>
+{% endif %} <br>
+{% if not poznamky[0] == -1 %}
+<a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+{% endif %}
+<div class="poznamka_datum">{{poznamky[3]}}<br>{{poznamky[4]}}</div>
+{{poznamky[4]}}
+</div>
+{% endif %}
+{% endfor %}
+</div>
+    
+    
+    </div>
+    <br>
+   
 </body>
 </html>

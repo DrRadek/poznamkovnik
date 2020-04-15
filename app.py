@@ -20,6 +20,8 @@ class PoznamkaForm(FlaskForm):
     poznamka = TextAreaField("Poznámka", validators=[DataRequired()])
     soukrome_verejne = RadioField("soukrome nebo verejne",
                       choices=[('soukromé', 'soukromé'), ('veřejné', 'veřejné')])
+    dulezitost = RadioField("dulezitost poznamky",
+                      choices=[("1", "nedůležitá poznámka"), ("2", 'normální poznámka'), ("3", 'důležitá poznámka')])
 
 class UpravaForm(FlaskForm):
     id=""
@@ -44,7 +46,7 @@ def zobraz_vsechny_poznamky():
 
     conn = sqlite3.connect('poznamky.db')
     cursor = conn.cursor()
-    cursor.execute(f'CREATE TABLE IF NOT EXISTS poznamky (jmeno varchar(30), poznamka varchar({max_delka}) , datum varchar(40), soukrome varchar(10))')
+    cursor.execute(f'CREATE TABLE IF NOT EXISTS poznamky (jmeno varchar(30), poznamka varchar({max_delka}) , datum varchar(40), soukrome varchar(10), dulezitost int)')
     conn.commit()
     
     form = []
@@ -122,20 +124,29 @@ def zobraz_vsechny_poznamky():
 
     poznamky4=[]
     i = 0
+    poznamky_dulezite="Žádná důležitá poznámka"
+    poznamky_normalni="Žádná normální poznámka"
+    poznamky_nedulezite="Žádná nedůležitá poznámka"
     for radky in poznamky3:            
         if not radky[4] == "soukromé" or (jmeno != "anonym" and jmeno == radky[1]):
             form.append(UpravaForm())
             form[i].uprava.data=radky[2]
             form[i].id = radky[0]
             i+=1
+            if radky[5] == 1:
+                poznamky_nedulezite=""
+            if radky[5] == 2:
+                poznamky_normalni=""
+            if radky[5] == 3:
+                poznamky_dulezite=""
             poznamky4.append(radky)
             
-    
 
 
     conn.close()
     return render_template('index.html', form=form,
-    poznamky=poznamky4, poznamky2=poznamky2, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
+    poznamky=poznamky4, poznamky2=poznamky2 , jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni,
+    poznamky_dulezite=poznamky_dulezite, poznamky_normalni=poznamky_normalni, poznamky_nedulezite=poznamky_nedulezite)
 
 @app.route('/poznamka/vlozit', methods=['GET','POST'])
 def vloz_poznamku():
@@ -173,17 +184,20 @@ def vloz_poznamku():
     if form.validate_on_submit():
 
         text=form.poznamka.data
+        
         if jmeno == "anonym" and form.soukrome_verejne.data=="soukromé":
             upozorneni=" přihlašte se pro vkládání soukromých poznámek!"
+            return render_template('vlozit_poznamku.html', form=form,upozorneni=upozorneni, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
+        elif jmeno == "anonym" and form.dulezitost.data=="3":
+            upozorneni=" přihlašte se pro vkládání důležitých poznámek!"
             return render_template('vlozit_poznamku.html', form=form,upozorneni=upozorneni, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
         elif len(text) > max_delka:
             upozorneni=" překročil jsi limit " + str(max_delka) + " znaků (máš " + str(len(text)) + " znaků)"
             return render_template('vlozit_poznamku.html', form=form,upozorneni=upozorneni, jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)
         else:
-           
             datum = datetime.now()
-            data_do_databaze = (jmeno,form.poznamka.data,datum,form.soukrome_verejne.data,)
-            cursor.execute('INSERT INTO poznamky VALUES(?,?,?,?)',data_do_databaze)
+            data_do_databaze = (jmeno,form.poznamka.data,datum,form.soukrome_verejne.data,int(form.dulezitost.data),)
+            cursor.execute('INSERT INTO poznamky VALUES(?,?,?,?,?)',data_do_databaze)
             conn.commit()
             cursor.close()
             conn.close()
@@ -204,10 +218,9 @@ def vloz_poznamku():
                         break
 
             return redirect('/')
-    
     form.poznamka.data="zde napište poznámku"
     form.soukrome_verejne.data="veřejné"
-
+    form.dulezitost.data = "1"
     conn.close()
    
     return render_template('vlozit_poznamku.html', form=form,upozorneni=" limit je " + str(max_delka) + " znaků", jmeno=jmeno,registrovat=registrovat,prihlaseni=prihlaseni, odhlaseni=odhlaseni)

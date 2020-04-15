@@ -18,13 +18,18 @@
     </div>
     <br>
     <h1>Nové poznámky</h1>
+    <p>{{poznamky2}}</p>
+    <div class="poznamka_radek">
+        <div class="poznamka_sloupec">
+            <h2 class="dulezite">důležité poznámky</h2>
+            <p class="uprostred">{{poznamky_dulezite}}</p>
     {% for poznamky in poznamky %}
-
+    {% if poznamky[5] == 3 %}
     <div class="poznamka">
         
         <div class="poznamka_nadpis">
            
-            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[5]}} width="50px" height="50px"></a>
+            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[6]}} width="50px" height="50px"></a>
             <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
         </div>
         {% if not poznamky[0] == -1 %}
@@ -38,7 +43,7 @@
             {{form.csrf_token}}
             {{form.uprava()}}
             
-            <input type="submit" value="Upravit">
+            <input type="submit" value="Upravit" class="uprava_poznamky">
             </form>
         </div>
             {% endif %}
@@ -49,19 +54,122 @@
         {% else %}
         <div class="poznamka_text">{{poznamky[2]}}</div> <br>
         {% endif %}
-       
-
-        <div class="poznamka_datum"  style="background-color:{{poznamky[6]}};">{{poznamky[3]}}<br>
+        {% if not poznamky[0] == -1 %}
+        <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        {% endif %}
+        <div class="poznamka_datum"  style="background-color:{{poznamky[7]}};">{{poznamky[3]}}<br>
             {% if not poznamky[0] == -1 %}
         {{poznamky[4]}}
-        <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        
         <!--<a href="/edit/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">editovat</a>-->
         {% endif %}   </div>
 
     </div>
 
-    <br>
+    {% endif %}
     {% endfor %}
-    <p>{{poznamky2}}</p>
+    </div>
+    
+    <div class="poznamka_sloupec">
+        <h2 class="normalni">normální poznámky</h2>
+        <p class="uprostred">{{poznamky_normalni}}</p>
+    {% for poznamky in poznamky %}
+    {% if poznamky[5] == 2 %}
+    <div class="poznamka">
+        
+        <div class="poznamka_nadpis">
+           
+            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[6]}} width="50px" height="50px"></a>
+            <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
+        </div>
+        {% if not poznamky[0] == -1 %}
+       
+        
+            {% for form in form %}
+
+            {% if form.id == poznamky[0] %}
+            <div class="poznamka_text">
+            <form method="POST" action="/upravit/index/{{poznamky[0]}}">
+            {{form.csrf_token}}
+            {{form.uprava()}}
+            
+            <input type="submit" value="Upravit" class="uprava_poznamky">
+            </form>
+        </div>
+            {% endif %}
+        
+            
+            {% endfor %}
+       
+        {% else %}
+        <div class="poznamka_text">{{poznamky[2]}}</div> <br>
+        {% endif %}
+        {% if not poznamky[0] == -1 %}
+        <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        {% endif %}
+        <div class="poznamka_datum"  style="background-color:{{poznamky[7]}};">{{poznamky[3]}}<br>
+            {% if not poznamky[0] == -1 %}
+        {{poznamky[4]}}
+       
+        <!--<a href="/edit/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">editovat</a>-->
+        {% endif %}   </div></div>
+        {% endif %}
+        {% endfor %}
+    
+</div>
+<div class="poznamka_sloupec">
+    <h2 class="nedulezite">nedůležité poznámky</h2>
+    <p class="uprostred">{{poznamky_nedulezite}}</p>
+    {% for poznamky in poznamky %}
+    {% if poznamky[5] == 1 %}
+    <div class="poznamka">
+        
+        <div class="poznamka_nadpis">
+           
+            <a href="/profil/{{poznamky[1]}}"><img src={{poznamky[6]}} width="50px" height="50px"></a>
+            <poznamka_nadpis_nahoru>{{poznamky[1]}}</poznamka_nadpis_nahoru>
+        </div>
+        {% if not poznamky[0] == -1 %}
+       
+        
+            {% for form in form %}
+
+            {% if form.id == poznamky[0] %}
+            <div class="poznamka_text">
+            <form method="POST" action="/upravit/index/{{poznamky[0]}}">
+            {{form.csrf_token}}
+            {{form.uprava()}}
+            
+            <input type="submit" value="Upravit" class="uprava_poznamky">
+            </form>
+        </div>
+            {% endif %}
+        
+            
+            {% endfor %}
+       
+        {% else %}
+        <div class="poznamka_text">{{poznamky[2]}}</div> <br>
+        {% endif %}
+        {% if not poznamky[0] == -1 %}
+        <a href="/smaz/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">smazat</a>
+        {% endif %} 
+        <div class="poznamka_datum"  style="background-color:{{poznamky[7]}};">{{poznamky[3]}}<br>
+        {% if not poznamky[0] == -1 %}
+
+        
+        {{poznamky[4]}}
+       
+        <!--<a href="/edit/index/{{poznamky[1]}}/{{poznamky[0]}}" class="smazani">editovat</a>-->
+        {% endif %}   </div>
+
+        
+    </div>
+        {% endif %}
+        {% endfor %}
+    
+</div>
+
+</div>
 </body>
 </html>
